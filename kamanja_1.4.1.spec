@@ -11,6 +11,9 @@ Source0:        Kamanja-1.4.1_2.11.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-buildroot       
 
+Requires(post): %{_sbindir}/update-alternatives
+Requires(postun): %{_sbindir}/update-alternatives	
+
 %description
 A RPM package for Kamanja binaries
 
@@ -18,15 +21,18 @@ A RPM package for Kamanja binaries
 %setup -q
 
 %install
-mkdir -p "$RPM_BUILD_ROOT/applications"
-cp -R * "$RPM_BUILD_ROOT/applications"
+mkdir -p "$RPM_BUILD_ROOT/usr/bin/Kamanja_1.4.1_2.11"
+cp -R * "$RPM_BUILD_ROOT/usr/bin/Kamanja_1.4.1_2.11"
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-/applications
+/usr/bin/Kamanja_1.4.1_2.11
 
 %post
-bash /applications/bin/SetPaths.sh $KAFKA_HOME
+%{_sbindir}/update-alternatives --install /usr/bin/Kamanja Kamanja /usr/bin/Kamanja_1.4.1_2.11/bin/kamanja 300
+
+%postun
+%{_sbindir}/update-alternatives --remove  Kamanja /usr/bin/Kamanja_1.4.1_2.11/bin/kamanja
