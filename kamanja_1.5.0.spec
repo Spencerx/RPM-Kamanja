@@ -14,6 +14,8 @@ BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires(post): %{_sbindir}/update-alternatives
 Requires(postun): %{_sbindir}/update-alternatives	
 
+Prefix: %{_prefix}
+
 %description
 A RPM package for Kamanja binaries
 
@@ -21,21 +23,21 @@ A RPM package for Kamanja binaries
 %setup -q
 
 %install
-mkdir -p $RPM_BUILD_ROOT/usr/bin/Kamanja_1.5.0_2.11
-cp -R * $RPM_BUILD_ROOT/usr/bin/Kamanja_1.5.0_2.11
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/Kamanja_1.5.0_2.11
+cp -R * $RPM_BUILD_ROOT%{_prefix}/Kamanja_1.5.0_2.11
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-/usr/bin/Kamanja_1.5.0_2.11
+%{_prefix}/Kamanja_1.5.0_2.11
+%doc %{_prefix}/Kamanja_1.5.0_2.11/documentation
+%config %{_prefix}/Kamanja_1.5.0_2.11/config
 
 %post
-%{_sbindir}/update-alternatives --install /usr/bin/Kamanja Kamanja /usr/bin/Kamanja_1.5.0_2.11/bin/kamanja 400
+%{_sbindir}/update-alternatives --install /usr/bin/Kamanja Kamanja $RPM_INSTALL_PREFIX/Kamanja_1.5.0_2.11/bin/kamanja 400
 
 %postun
-if [ $1 -eq 0 ] ; then
-	%{_sbindir}/update-alternatives --remove Kamanja /usr/bin/Kamanja_1.5.0_2.11/bin/kamanja
-fi
+%{_sbindir}/update-alternatives --remove Kamanja $RPM_INSTALL_PREFIX/Kamanja_1.5.0_2.11/bin/kamanja
 
