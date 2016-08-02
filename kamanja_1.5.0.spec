@@ -7,7 +7,6 @@ License:        GPL
 URL:            http://kamanja.org
 Source0:        kamanja-1.5.0_2.11.tar.gz
 
-
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-buildroot       
 
