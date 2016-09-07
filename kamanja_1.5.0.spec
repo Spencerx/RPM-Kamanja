@@ -35,8 +35,17 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_prefix}/kamanja_1.5.0_2.11/config
 
 %post
-%{_sbindir}/update-alternatives --install /usr/bin/kamanja kamanja $RPM_INSTALL_PREFIX/kamanja_1.5.0_2.11/bin/kamanja 400
+[ -L /usr/bin/kamanja ]  && rm -f /usr/bin/kamanja || echo "File Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
+sudo ln -s $RPM_INSTALL_PREFIX/kamanja_1.5.0_2.11/ /usr/bin/kamanja
+echo "$RPM_INSTALL_PREFIX/kamanja_1.5.0_2.11" >> /tmp/kamanja_vers.temp
 
 %postun
-%{_sbindir}/update-alternatives --remove kamanja $RPM_INSTALL_PREFIX/kamanja_1.5.0_2.11/bin/kamanja
-
+[ -L /usr/bin/kamanja ]  && rm -f /usr/bin/kamanja || echo "File Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
+[ -d $RPM_INSTALL_PREFIX/kamanja_1.5.0_2.11 ]  && rm -r $RPM_INSTALL_PREFIX/kamanja_1.5.0_2.11 || echo "Dir Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
+sed -e '$ d' /tmp/kamanja_vers.temp > /tmp/kamanja_vers.temp_1 && mv /tmp/kamanja_vers.temp_1 /tmp/kamanja_vers.temp
+PREV_VER=`tail -1 /tmp/kamanja_vers.temp`
+if [ -s /tmp/kamanja_vers.temp  ]; then
+        ln -s $PREV_VER /usr/bin/kamanja
+else
+        rm /tmp/kamanja_vers.temp
+fi
