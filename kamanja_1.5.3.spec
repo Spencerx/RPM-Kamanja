@@ -33,22 +33,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ "$1" = "1" ]; then
-    echo "First install complete"
     [ -L $RPM_INSTALL_PREFIX/kamanja ]  && rm -f $RPM_INSTALL_PREFIX/kamanja || echo "File Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
     ln -s $RPM_INSTALL_PREFIX/Kamanja_%{version}/ $RPM_INSTALL_PREFIX/kamanja
     echo "$RPM_INSTALL_PREFIX/Kamanja_%{version}" >> /tmp/kamanja_vers.temp
-elif [ "$1" = "2" ]; then
-    echo "Upgrade complete"
-    sed '1d' /tmp/kamanja_vers.temp  > /tmp/kamanja_vers.temp_1; mv /tmp/kamanja_vers.temp_1 /tmp/kamanja_vers.temp # POSIX
-    echo "$RPM_INSTALL_PREFIX/Kamanja_%{version}" >> /tmp/kamanja_vers.temp	
+    echo "First install complete"
+else
     [ -L $RPM_INSTALL_PREFIX/kamanja ]  && rm -f $RPM_INSTALL_PREFIX/kamanja || echo "File Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
-    ln -s $RPM_INSTALL_PREFIX/Kamanja_%{version}/ $RPM_INSTALL_PREFIX/kamanja	
+    ln -s $RPM_INSTALL_PREFIX/Kamanja_%{version}/ $RPM_INSTALL_PREFIX/kamanja
+    sed '1d' /tmp/kamanja_vers.temp  > /tmp/kamanja_vers.temp_1; mv /tmp/kamanja_vers.temp_1 /tmp/kamanja_vers.temp # POSIX
+    echo "$RPM_INSTALL_PREFIX/Kamanja_%{version}" >> /tmp/kamanja_vers.temp
+    echo "Upgrade complete"
 fi
 
 %postun
 if [ "$1" = "1"  ]; then
         echo "First uninstall complete"
-elif [ "$1" = "2" ]; then
+else
         [ -L $RPM_INSTALL_PREFIX/kamanja ]  && rm -f $RPM_INSTALL_PREFIX/kamanja || echo "File Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
         [ -d $RPM_INSTALL_PREFIX/Kamanja_%{version} ]  && rm -r $RPM_INSTALL_PREFIX/Kamanja_%{version} || echo "Dir Not Found" >> $RPM_INSTALL_PREFIX/rpm.log
         sed -e '/%{version}/d' /tmp/kamanja_vers.temp > /tmp/kamanja_vers.temp_1 && mv /tmp/kamanja_vers.temp_1 /tmp/kamanja_vers.temp
